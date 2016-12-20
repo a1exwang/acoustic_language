@@ -1,12 +1,8 @@
-from keras.layers import Dense, Activation, Conv1D, AveragePooling1D, Dropout, Flatten
+from keras.layers import Dense, Conv1D, LSTM, TimeDistributed
+from keras.layers import Activation, AveragePooling1D, Dropout, Flatten, Reshape, Layer
 from keras.models import Sequential
-import keras.backend as K
-import keras.metrics
-
-
-def nhot_acc(y_true, y_pred):
-    # n_activated = K.sum(y_true, axis=1)
-    return keras.metrics.top_k_categorical_accuracy(y_true=y_true, y_pred=y_pred)
+from nn.helpers import nhot_acc
+import numpy as np
 
 
 class Model:
@@ -38,6 +34,21 @@ class Model:
 
     def get_model(self):
         return self.model
+
+    def train(self, x_batch, y_batch):
+        return self.model.train_on_batch(
+            np.reshape(x_batch, [x_batch.shape[0], x_batch.shape[1], 1]),
+            y_batch)
+
+    def make_input(self, x, y, batch_size):
+        assert(x.shape[0] == y.shape[0])
+        data_count = x.shape[1] // batch_size
+
+        for i in range(data_count):
+            x_batch = x[i*batch_size:(i+1)*batch_size, :]
+            y_batch = y[i*batch_size:(i+1)*batch_size, :]
+
+            yield (x_batch, y_batch)
 
     def save_to_file(self, file_path):
         pass

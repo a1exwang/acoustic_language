@@ -116,15 +116,3 @@ class Maps:
 
             yield (file_path, file_data)
 
-    @staticmethod
-    def make_batch(x, y, batch_size):
-        assert(x.shape[0] == y.shape[0])
-        data_count = x.shape[1] // batch_size
-
-        # x_result = np.zeros([x.shape[0], batch_size, data_count])
-        # y_result = np.zeros([SEMITONES_ON_PIANO, batch_size, data_count])
-        for i in range(data_count):
-            x_batch = x[i*batch_size:(i+1)*batch_size, :]
-            y_batch = y[i*batch_size:(i+1)*batch_size, :]
-
-            yield (x_batch, y_batch)
